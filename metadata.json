@@ -1,0 +1,12 @@
+{
+  "name": "Socratic Math Tutor",
+  "description": "A compassionate, Socratic AI tutor that walks you through math problems step-by-step using image recognition.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "Image Recognition",
+    "Math Problem Solving",
+    "Socratic Teaching"
+  ]
+}
