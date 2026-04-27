@@ -13,10 +13,13 @@ import {
   GraduationCap, 
   Upload,
   RefreshCw,
-  Info
+  Info,
+  Layers,
+  Sparkles
 } from 'lucide-react';
 import { chatWithTutor, Message } from './services/geminiService';
 import { MathRenderer } from './components/MathRenderer';
+import { PhaseTransitionVisual } from './components/PhaseTransitionVisual';
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -24,6 +27,7 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState<{ mimeType: string; data: string } | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [leftPaneTab, setLeftPaneTab] = useState<'problem' | 'lattice'>('problem');
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -110,6 +114,27 @@ export default function App() {
           <div className="w-8 h-8 rounded-full bg-[#C5A059] flex items-center justify-center text-[#0F0F0F] font-bold text-xs">Σ</div>
           <span className="text-lg tracking-widest uppercase font-sans font-light">Lumina Mentor</span>
         </div>
+        <div className="flex flex-col items-center gap-1 mx-4 lg:flex hidden">
+          <span className="text-[8px] font-sans uppercase tracking-[0.3em] opacity-30">Phase-Lock Status</span>
+          <div className="flex gap-1 px-4 py-1.5 bg-[#161616] border border-[#2A2A2A] rounded-full">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div 
+                key={i} 
+                animate={{ 
+                  opacity: i < (messages.length % 9) ? [0.4, 1, 0.4] : 0.1,
+                  scaleY: i < (messages.length % 9) ? [1, 1.5, 1] : 1
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  delay: i * 0.1 
+                }}
+                className={`w-1 h-3 rounded-full ${i < (messages.length % 9) ? 'bg-[#C5A059]' : 'bg-[#2A2A2A]'}`} 
+              />
+            ))}
+          </div>
+        </div>
+
         <div className="flex gap-8 font-sans text-[10px] tracking-widest uppercase opacity-40">
           <button onClick={handleRestart} className="hover:text-[#C5A059] transition-colors">Start Over</button>
           <span className="opacity-20 cursor-default">Archive</span>
@@ -123,54 +148,101 @@ export default function App() {
       <main className="flex-1 flex overflow-hidden">
         {/* Left Pane: Problem Workspace */}
         <section className="w-[420px] border-r border-[#2A2A2A] p-10 flex flex-col hidden lg:flex bg-[#0F0F0F]">
-          <div className="mb-8">
-            <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#C5A059] mb-2 block">Active Problem</span>
-            <h2 className="text-2xl font-light text-[#F5F2ED]">Mathematical Study</h2>
+          <div className="mb-8 flex justify-between items-end">
+            <div>
+              <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#C5A059] mb-2 block">
+                {leftPaneTab === 'problem' ? 'Active Problem' : 'Lattice Analytics'}
+              </span>
+              <h2 className="text-2xl font-light text-[#F5F2ED]">
+                {leftPaneTab === 'problem' ? 'Mathematical Study' : 'Entropy Visual'}
+              </h2>
+            </div>
+            <div className="flex bg-[#161616] border border-[#2A2A2A] rounded-lg p-1 gap-1">
+              <button 
+                onClick={() => setLeftPaneTab('problem')}
+                className={`p-1.5 rounded transition-all ${leftPaneTab === 'problem' ? 'bg-[#2A2A2A] text-[#C5A059]' : 'text-white/20 hover:text-white'}`}
+                title="Problem View"
+              >
+                <ImageIcon size={14} />
+              </button>
+              <button 
+                onClick={() => setLeftPaneTab('lattice')}
+                className={`p-1.5 rounded transition-all ${leftPaneTab === 'lattice' ? 'bg-[#2A2A2A] text-[#C5A059]' : 'text-white/20 hover:text-white'}`}
+                title="Lattice View"
+              >
+                <Layers size={14} />
+              </button>
+            </div>
           </div>
           
-          {/* Uploaded Image Workspace */}
-          <div className="relative flex-1 bg-[#161616] rounded-xl border border-[#2A2A2A] p-6 flex flex-col items-center justify-center shadow-inner overflow-hidden">
-            <div className="absolute top-0 left-0 w-full p-3 bg-[#1A1A1A] border-b border-[#2A2A2A] flex justify-between px-4">
-              <span className="font-sans text-[9px] uppercase tracking-widest opacity-40">work_item_math.jpg</span>
-              <div className="flex gap-1">
-                <div className="w-1 h-1 rounded-full bg-[#2A2A2A]"></div>
-                <div className="w-1 h-1 rounded-full bg-[#2A2A2A]"></div>
-              </div>
-            </div>
-            
-            {imagePreview ? (
-              <div className="relative w-full h-full flex items-center justify-center mt-6">
-                <img 
-                  src={imagePreview} 
-                  className="max-w-full max-h-[80%] rounded shadow-2xl grayscale-[30%] opacity-90" 
-                  alt="Problem"
-                />
-                <button 
-                  onClick={clearImage}
-                  className="absolute top-0 right-0 p-2 text-white/20 hover:text-white transition-colors"
+          <div className="relative flex-1 bg-[#161616] rounded-xl border border-[#2A2A2A] flex flex-col overflow-hidden">
+            <AnimatePresence mode="wait">
+              {leftPaneTab === 'problem' ? (
+                <motion.div 
+                  key="problem"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  className="w-full h-full p-6 flex flex-col items-center justify-center relative shadow-inner"
                 >
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center opacity-20 space-y-4">
-                <Upload size={40} className="stroke-1" />
-                <p className="font-sans text-[10px] tracking-[0.2em] uppercase">Pending Data</p>
-              </div>
-            )}
+                  <div className="absolute top-0 left-0 w-full p-3 bg-[#1A1A1A] border-b border-[#2A2A2A] flex justify-between px-4 z-10">
+                    <span className="font-sans text-[9px] uppercase tracking-widest opacity-40">work_item_math.jpg</span>
+                    <div className="flex gap-1">
+                      <div className="w-1 h-1 rounded-full bg-[#2A2A2A]"></div>
+                      <div className="w-1 h-1 rounded-full bg-[#2A2A2A]"></div>
+                    </div>
+                  </div>
+                  
+                  {imagePreview ? (
+                    <div className="relative w-full h-full flex items-center justify-center mt-6">
+                      <img 
+                        src={imagePreview} 
+                        className="max-w-full max-h-[80%] rounded shadow-2xl grayscale-[30%] opacity-90" 
+                        alt="Problem"
+                      />
+                      <button 
+                        onClick={clearImage}
+                        className="absolute top-0 right-0 p-2 text-white/20 hover:text-white transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center opacity-20 space-y-4">
+                      <Upload size={40} className="stroke-1" />
+                      <p className="font-sans text-[10px] tracking-[0.2em] uppercase">Pending Data</p>
+                    </div>
+                  )}
 
-            <div className="mt-8 w-full border-t border-dashed border-[#2A2A2A] pt-4">
-              <p className="font-sans text-[10px] text-center opacity-40 leading-relaxed uppercase tracking-widest italic">
-                {isLoading ? "Socratically processing structure..." : "Awaiting visual input for analysis"}
-              </p>
-            </div>
+                  <div className="mt-8 w-full border-t border-dashed border-[#2A2A2A] pt-4">
+                    <p className="font-sans text-[10px] text-center opacity-40 leading-relaxed uppercase tracking-widest italic">
+                      {isLoading ? "Socratically processing structure..." : "Awaiting visual input for analysis"}
+                    </p>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="lattice"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="w-full h-full p-0"
+                >
+                  <PhaseTransitionVisual />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="mt-8 flex gap-4">
             <button 
-              onClick={() => fileInputRef.current?.click()}
-              className="flex-1 py-4 border border-[#C5A059] text-[#C5A059] font-sans text-[10px] uppercase tracking-widest rounded-sm hover:bg-[#C5A059] hover:text-[#0F0F0F] transition-all font-bold"
+              onClick={() => {
+                setLeftPaneTab('problem');
+                fileInputRef.current?.click();
+              }}
+              className="flex-1 py-4 border border-[#C5A059] text-[#C5A059] font-sans text-[10px] uppercase tracking-widest rounded-sm hover:bg-[#C5A059] hover:text-[#0F0F0F] transition-all font-bold group flex items-center justify-center gap-2"
             >
+              <Upload size={14} className="group-hover:scale-110 transition-transform" />
               Upload Problem
             </button>
           </div>
@@ -250,11 +322,23 @@ export default function App() {
                   <span className="text-[11px] font-sans opacity-20 italic">Question the fundamental logic.</span>
                 </div>
                 
-                <div className="flex flex-col items-end opacity-40">
-                  <span className="text-[10px] font-sans uppercase tracking-widest mb-2">Depth</span>
+                <div className="flex flex-col items-end">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] font-sans uppercase tracking-[0.2em] opacity-40">Entropy Flux</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></div>
+                  </div>
                   <div className="flex gap-1.5">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className={`w-6 h-0.5 ${i < Math.min(messages.length / 2, 4) ? 'bg-[#C5A059]' : 'bg-[#2A2A2A]'}`}></div>
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <motion.div 
+                        key={i} 
+                        initial={false}
+                        animate={{ 
+                          height: i < Math.min(messages.length / 2, 6) ? "12px" : "2px",
+                          opacity: i < Math.min(messages.length / 2, 6) ? 1 : 0.2
+                        }}
+                        className={`w-4 ${i < Math.min(messages.length / 2, 6) ? 'bg-[#C5A059] flux-noise-pulse' : 'bg-[#2A2A2A]'} rounded-t-sm transition-all`} 
+                        style={{ animationDelay: `${i * 0.05}s` }}
+                      />
                     ))}
                   </div>
                 </div>

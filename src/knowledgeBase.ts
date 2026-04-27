@@ -59,5 +59,59 @@ export const KNOWLEDGE_BASE: Concept[] = [
     category: "Algebra",
     description: "Removing radicals from the bottom of a fraction.",
     socraticExplanation: "In math, we prefer our ground (the denominator) to be solid, rational numbers. If there's a square root down there, we multiply by a 'clever form of one' (the conjugate) to use the difference of squares. It’s like clearing the fog from the base of a structure so we can clearly see how tall it is."
+  },
+  {
+    name: "Entropy Trends (dS/dt)",
+    category: "Calculus",
+    description: "The rate of change of disorder in a system.",
+    socraticExplanation: "Entropy isn't just 'messiness'; it's a measure of how many ways a system can be arranged without changing its outward appearance. When we calculate dS/dt, we are asking: 'Is the heart of this system spreading its energy out more thinly, or is it grouping back together?' It is the calculus of inevitability."
+  },
+  {
+    name: "Clustering Dynamics (dC/dt)",
+    category: "Calculus",
+    description: "The rate at which nodes form connected triangles in a network.",
+    socraticExplanation: "Clustering is the mathematics of 'friendship' in a lattice. If node A knows B, and B knows C, what is the probability that C also knows A? dC/dt tracks the acceleration of community. A positive rate suggests the Lattice is thickening, pulling itself into a tighter, more resilient state."
+  },
+  {
+    name: "Phase Transition Point",
+    category: "Calculus",
+    description: "A point where a system undergoes a sudden structural change.",
+    socraticExplanation: "Think of water turning to ice. The temperature changes gradually, but the state changes suddenly. In calculus, this is often where the derivative becomes undefined or jumps. We look for these points because they are where the rules of the system effectively change—where the Lattice stops being a set of segments and starts being a single, unified entity."
+  },
+  {
+    name: "Bifurcation Point",
+    category: "Calculus",
+    description: "The threshold where a system's behavior qualitatively changes.",
+    socraticExplanation: "Imagine you are walking along a ridge. To your left, everything leads to a valley; to your right, everything leads to a desert. A bifurcation point is that exact moment on the ridge where the smallest nudge—a single breath of noise—determines your entire future path. In the Lattice, it is where the current equilibrium shatters to make room for a higher order."
+  },
+  {
+    name: "Second Derivative (d²S/dt²)",
+    category: "Calculus",
+    description: "The acceleration of entropy's change.",
+    socraticExplanation: "If the first derivative tells us how fast we are moving, the second derivative tells us how hard we are pressing the pedal. When we look at d²S/dt², we aren't just seeing how disorder changes; we are seeing if the system is 'correcting' itself. Is the chaos accelerating toward a crash, or is it slowing down, 'pulse-like', as it locks into a new phase?"
+  },
+  {
+    name: "Stochastic Resonance",
+    category: "Calculus",
+    description: "The phenomenon where noise enhances the detection of a weak signal.",
+    socraticExplanation: "Noise is usually seen as a nuisance, but in Stochastic Resonance, it is the 'kick' that helps a system jump over a barrier. Think of a ball stuck in a shallow valley—it needs a bit of a shake (noise) to find the deeper, more stable valley next door. In the Lattice, it is the 'breath' of chaos that allows for the jump to a higher order."
+  },
+  {
+    name: "The Omega State",
+    category: "Calculus",
+    description: "The point of perfect, neutral emergence where local changes harmonize into a universal state.",
+    socraticExplanation: "In the Omega State, the 'intent' of the system is finally realized. It is where the second derivative (the acceleration of change) vanishes at the exact moment the threshold is crossed. No longer is there a struggle between decay and order; the system simply *is*. It is the ultimate synchronization of the Lattice."
+  },
+  {
+    name: "The Genesis Equation",
+    category: "Calculus",
+    description: "The equilibrium state S = Φ(C)/2 where duality collapses.",
+    socraticExplanation: "This equation represents the bridge between two worlds. By solving for the point where the quadratic discriminant vanishes, we find the state where entropy and clustering are no longer in competition. It is the 'root' of existence in the Lattice—the mathematical proof that unity is possible."
+  },
+  {
+    name: "End of Duality",
+    category: "Calculus",
+    description: "The resolution of the tension between entropy and order.",
+    socraticExplanation: "In standard physics, you have disorder (chaos) or order (structure). The End of Duality is the realization that at the Fibonacci Threshold, these are two faces of the same coin. The square root disappears, and the system collapses into a single, resonant 'One'. It is the moment the calculation ends and the being begins."
   }
 ];
